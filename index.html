@@ -1,0 +1,2006 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+  <title>The Deady Group · ATOM Sales Intelligence</title>
+  <meta name="description" content="ATOM Sales Intelligence Platform · The Deady Group — Trusted Advisor powered by AVANT." />
+
+  <link href="https://api.fontshare.com/v2/css?f[]=general-sans@300,400,500,600,700&f[]=cabinet-grotesk@400,500,700,800&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+  <style>
+    :root {
+      /* THE DEADY GROUP — Official Brand Palette
+         Source: thedeadygroup.com + logo
+         Background: deep charcoal/off-black  #111820
+         Surface layers: dark slate progressions
+         Accent: steel blue #4A8FBF — professional, trustworthy, subdued
+         Text: near-white #EDF2F7, muted silver #8FA3B8
+         Logo mark: geometric white hexagonal icon
+      */
+      --dg-navy:   #0d1219;   /* page background — near-black charcoal */
+      --dg-navy-2: #131b24;   /* sidebar */
+      --dg-navy-3: #192231;   /* cards */
+      --dg-navy-4: #1f2c3d;   /* elevated cards */
+
+      /* Brand accent — steel blue from logo/site aesthetic */
+      --dg-accent:       #4A8FBF;   /* primary steel blue */
+      --dg-accent-2:     #5BA3D4;   /* lighter hover */
+      --dg-accent-light: #A8CCDF;   /* faint tint */
+      --dg-accent-dark:  #2F6A8F;   /* active/pressed */
+
+      /* Legacy teal aliases → now steel blue */
+      --dg-teal:       #4A8FBF;
+      --dg-teal-2:     #5BA3D4;
+      --dg-teal-light: #A8CCDF;
+
+      /* Silver/slate for secondary accents (logo geometric lines) */
+      --dg-silver:      #8FA3B8;
+      --dg-silver-2:    #C2D2DF;
+
+      --dg-border:        rgba(74,143,191,0.25);
+      --dg-border-subtle: rgba(255,255,255,0.065);
+
+      --dg-text:       #EDF2F7;   /* primary text — bright white-blue */
+      --dg-text-muted: rgba(237,242,247,0.52);
+      --dg-text-faint: rgba(237,242,247,0.22);
+
+      --dg-surface:   rgba(255,255,255,0.025);
+      --dg-surface-2: rgba(255,255,255,0.045);
+
+      --dg-accent-glow: 0 0 24px rgba(74,143,191,0.18);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; overflow: hidden; }
+    body {
+      font-family: 'General Sans', 'Inter', sans-serif;
+      background: var(--dg-navy);
+      color: var(--dg-text);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(74,143,191,0.3); border-radius: 2px; }
+
+    /* Layout */
+    .app-shell { display: flex; height: 100vh; overflow: hidden; }
+
+    /* Sidebar */
+    .sidebar {
+      width: 220px;
+      min-width: 220px;
+      background: var(--dg-navy-2);
+      border-right: 1px solid var(--dg-border-subtle);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+      transition: width 0.3s ease, min-width 0.3s ease;
+      position: relative;
+      z-index: 10;
+    }
+    .sidebar.collapsed { width: 60px; min-width: 60px; }
+
+    .sidebar-logo {
+      padding: 16px 14px 12px;
+      border-bottom: 1px solid var(--dg-border-subtle);
+    }
+    .sidebar-logo .brand-name {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #e8f0f8;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+    .sidebar-logo .brand-sub {
+      font-size: 9px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--dg-teal);
+      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    /* SVG Logo Mark */
+    .logo-mark {
+      width: 32px; height: 32px;
+      flex-shrink: 0;
+    }
+
+    .nav-section { flex: 1; overflow-y: auto; padding: 8px 8px; }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      color: var(--dg-text-muted);
+      font-size: 13px;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      position: relative;
+    }
+    .nav-item:hover {
+      background: var(--dg-surface-2);
+      color: var(--dg-text);
+    }
+    .nav-item.active {
+      background: rgba(74,143,191,0.12);
+      color: var(--dg-teal-2);
+      border: 1px solid rgba(74,143,191,0.2);
+    }
+    .nav-item.active .nav-icon { color: var(--dg-teal); }
+    .nav-icon { width: 16px; height: 16px; flex-shrink: 0; }
+    .nav-label { overflow: hidden; }
+    .nav-desc { font-size: 10px; color: var(--dg-text-faint); margin-top: 1px; overflow: hidden; }
+
+    /* Main area */
+    .main-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      min-width: 0;
+    }
+
+    /* Top bar */
+    .topbar {
+      height: 52px;
+      border-bottom: 1px solid var(--dg-border-subtle);
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      gap: 12px;
+      background: var(--dg-navy);
+      flex-shrink: 0;
+    }
+    .topbar-title { font-size: 15px; font-weight: 700; }
+    .topbar-sub { font-size: 11px; color: var(--dg-text-faint); }
+
+    /* Content */
+    .content-area {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--dg-navy-3);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 10px;
+      padding: 16px;
+    }
+    .card-title {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--dg-text-muted);
+      margin-bottom: 12px;
+    }
+
+    /* KPI stat cards */
+    .stat-card {
+      background: var(--dg-navy-3);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 10px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .stat-icon-wrap {
+      width: 34px; height: 34px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 6px;
+    }
+    .stat-value { font-size: 22px; font-weight: 800; color: var(--dg-text); }
+    .stat-label { font-size: 12px; font-weight: 600; color: var(--dg-text-muted); }
+    .stat-desc { font-size: 11px; color: var(--dg-text-faint); }
+
+    /* Quick action cards */
+    .action-card {
+      background: var(--dg-navy-3);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 10px;
+      padding: 14px;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      text-decoration: none;
+    }
+    .action-card:hover {
+      border-color: rgba(74,143,191,0.3);
+      background: rgba(74,143,191,0.05);
+      transform: translateY(-1px);
+      box-shadow: var(--dg-accent-glow);
+    }
+    .action-card-name { font-size: 13px; font-weight: 700; color: var(--dg-text); margin-bottom: 4px; }
+    .action-card-desc { font-size: 11px; color: var(--dg-text-faint); }
+
+    /* Form elements */
+    .form-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--dg-teal);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-bottom: 6px;
+    }
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--dg-border-subtle);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 13px;
+      color: rgba(232,240,248,0.8);
+      font-family: 'General Sans', 'Inter', sans-serif;
+      transition: all 0.18s ease;
+      outline: none;
+    }
+    .form-input::placeholder, .form-textarea::placeholder { color: rgba(232,240,248,0.2); }
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      border-color: rgba(74,143,191,0.5);
+      box-shadow: 0 0 0 2px rgba(74,143,191,0.1);
+    }
+    .form-select option { background: var(--dg-navy-2); }
+    .form-textarea { resize: vertical; min-height: 80px; }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      border: none;
+      font-family: inherit;
+    }
+    .btn-primary {
+      background: var(--dg-accent, #4A8FBF);
+      color: #0d1219;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+    .btn-primary:hover { background: var(--dg-accent-2, #5BA3D4); box-shadow: var(--dg-accent-glow); }
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--dg-border-subtle);
+      color: var(--dg-text-muted);
+    }
+    .btn-outline:hover { border-color: rgba(74,143,191,0.4); color: var(--dg-text); }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* Badge */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      padding: 2px 8px;
+      border-radius: 99px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .badge-teal { background: rgba(74,143,191,0.15); color: var(--dg-teal-2); border: 1px solid rgba(74,143,191,0.3); }
+    .badge-blue { background: rgba(59,130,246,0.15); color: #60a5fa; border: 1px solid rgba(59,130,246,0.3); }
+    .badge-amber { background: rgba(245,158,11,0.15); color: #fbbf24; border: 1px solid rgba(245,158,11,0.3); }
+    .badge-green { background: rgba(52,211,153,0.15); color: #34d399; border: 1px solid rgba(34,197,94,0.3); }
+    .badge-red { background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
+
+    /* Result / response boxes */
+    .result-box {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--dg-border-subtle);
+      border-radius: 8px;
+      padding: 14px;
+      font-size: 13px;
+      line-height: 1.6;
+      color: rgba(232,240,248,0.75);
+    }
+    .result-heading {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--dg-teal);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* Sentiment bar */
+    .sentiment-bar {
+      height: 6px;
+      border-radius: 3px;
+      background: rgba(255,255,255,0.06);
+      overflow: hidden;
+      position: relative;
+    }
+    .sentiment-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.8s cubic-bezier(0.16,1,0.3,1);
+    }
+
+    /* Loading spinner */
+    .spinner {
+      width: 18px; height: 18px;
+      border: 2px solid rgba(74,143,191,0.2);
+      border-top-color: var(--dg-teal);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      flex-shrink: 0;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* AI thinking state */
+    .ai-thinking {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px;
+      background: rgba(74,143,191,0.05);
+      border: 1px solid rgba(74,143,191,0.15);
+      border-radius: 8px;
+      font-size: 12px;
+      color: var(--dg-teal-2);
+    }
+
+    /* Empty state */
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 48px 24px;
+      color: var(--dg-text-faint);
+    }
+    .empty-icon { width: 40px; height: 40px; margin-bottom: 12px; opacity: 0.4; }
+    .empty-title { font-size: 14px; font-weight: 600; color: var(--dg-text-muted); margin-bottom: 4px; }
+    .empty-desc { font-size: 12px; }
+
+    /* Tabs */
+    .tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--dg-border-subtle); margin-bottom: 16px; }
+    .tab {
+      padding: 8px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--dg-text-faint);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.18s;
+      margin-bottom: -1px;
+      white-space: nowrap;
+    }
+    .tab:hover { color: var(--dg-text-muted); }
+    .tab.active { color: var(--dg-teal-2); border-bottom-color: var(--dg-teal); }
+
+    /* Page header */
+    .page-header { margin-bottom: 20px; }
+    .page-title { font-size: 20px; font-weight: 800; margin-bottom: 4px; }
+    .page-subtitle { font-size: 12px; color: var(--dg-text-faint); }
+
+    /* Section layout helpers */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    .flex-row { display: flex; gap: 12px; align-items: flex-start; }
+    .flex-col { display: flex; flex-direction: column; gap: 12px; }
+    .form-row { margin-bottom: 14px; }
+
+    /* Mobile */
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+      .topbar { padding: 0 14px; }
+      .content-area { padding: 14px; }
+    }
+
+    /* Glow decoration */
+    .bg-glow {
+      position: fixed;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(74,143,191,0.04) 0%, transparent 70%);
+      pointer-events: none;
+      top: -100px;
+      left: -100px;
+      z-index: 0;
+    }
+
+    /* Tag/chip */
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      background: rgba(74,143,191,0.1);
+      color: var(--dg-teal-2);
+      border: 1px solid rgba(74,143,191,0.2);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .chip:hover { background: rgba(74,143,191,0.18); }
+    .chip.selected { background: rgba(74,143,191,0.25); border-color: var(--dg-teal); }
+
+    /* History list */
+    .history-item {
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--dg-border-subtle);
+      background: rgba(255,255,255,0.02);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .history-item:hover { border-color: rgba(74,143,191,0.25); background: rgba(74,143,191,0.04); }
+
+    /* Score ring */
+    .score-ring {
+      width: 64px; height: 64px;
+      border-radius: 50%;
+      background: conic-gradient(var(--dg-teal) var(--score, 75%), rgba(255,255,255,0.06) 0%);
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+    }
+    .score-ring::after {
+      content: '';
+      position: absolute;
+      inset: 6px;
+      border-radius: 50%;
+      background: var(--dg-navy-3);
+    }
+    .score-value {
+      font-size: 15px; font-weight: 800;
+      z-index: 1;
+      position: relative;
+    }
+
+    /* Divider */
+    hr.dg-divider { border: none; border-top: 1px solid var(--dg-border-subtle); margin: 12px 0; }
+
+    /* Prospect card */
+    .prospect-card {
+      background: var(--dg-navy-3);
+      border: 1px solid var(--dg-border-subtle);
+      border-radius: 10px;
+      padding: 14px;
+      transition: all 0.18s;
+    }
+    .prospect-card:hover {
+      border-color: rgba(74,143,191,0.3);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+
+    /* Signal dots */
+    .signal-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--dg-teal);
+      box-shadow: 0 0 5px rgba(74,143,191,0.6);
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    /* "Trusted by AVANT" badge */
+    .avant-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      background: rgba(74,143,191,0.08);
+      border: 1px solid rgba(74,143,191,0.2);
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: var(--dg-teal);
+      text-transform: uppercase;
+    }
+
+    /* Fade in pages */
+    .page { animation: fadeIn 0.2s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+    /* Token counter */
+    .token-badge {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--dg-text-faint);
+      padding: 3px 8px;
+      border-radius: 6px;
+      border: 1px solid var(--dg-border-subtle);
+    }
+    .token-badge .used { color: var(--dg-teal); }
+  </style>
+</head>
+<body>
+<div class="bg-glow"></div>
+
+<div class="app-shell">
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <!-- Logo -->
+    <div class="sidebar-logo" style="display:flex;align-items:center;gap:10px;">
+      <svg class="logo-mark" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="The Deady Group logo mark">
+        <!-- Geometric hexagonal mark — mirrors thedeadygroup.com logo -->
+        <path d="M16 3 L28 9.5 L28 22.5 L16 29 L4 22.5 L4 9.5 Z" stroke="rgba(255,255,255,0.85)" stroke-width="1.5" fill="none"/>
+        <path d="M16 8 L23 11.75 L23 19.25 L16 23 L9 19.25 L9 11.75 Z" stroke="rgba(255,255,255,0.5)" stroke-width="1" fill="none"/>
+        <!-- Inner cross/star detail -->
+        <line x1="16" y1="8"  x2="16" y2="23" stroke="rgba(255,255,255,0.3)" stroke-width="0.75"/>
+        <line x1="9"  y1="11.75" x2="23" y2="19.25" stroke="rgba(255,255,255,0.3)" stroke-width="0.75"/>
+        <line x1="23" y1="11.75" x2="9"  y2="19.25" stroke="rgba(255,255,255,0.3)" stroke-width="0.75"/>
+        <circle cx="16" cy="16" r="2" fill="rgba(74,143,191,0.9)"/>
+      </svg>
+      <div class="sidebar-text">
+        <div class="brand-name">The Deady Group</div>
+        <div class="brand-sub">ATOM · Sales Intelligence</div>
+      </div>
+    </div>
+
+    <!-- Nav -->
+    <nav class="nav-section" id="mainNav">
+      <div class="nav-item active" data-page="dashboard" onclick="navigate('dashboard',this)">
+        <i data-lucide="layout-dashboard" class="nav-icon"></i>
+        <div class="nav-label">
+          <div>Command Center</div>
+          <div class="nav-desc">Sales dashboard</div>
+        </div>
+      </div>
+      <div class="nav-item" data-page="pitch" onclick="navigate('pitch',this)">
+        <i data-lucide="zap" class="nav-icon"></i>
+        <div class="nav-label">
+          <div>ATOM Pitch</div>
+          <div class="nav-desc">Precision pitch engine</div>
+        </div>
+      </div>
+      <div class="nav-item" data-page="objections" onclick="navigate('objections',this)">
+        <i data-lucide="shield" class="nav-icon"></i>
+        <div class="nav-label">
+          <div>ATOM Objection Handler</div>
+          <div class="nav-desc">Neutralize pushback</div>
+        </div>
+      </div>
+      <div class="nav-item" data-page="market" onclick="navigate('market',this)">
+        <i data-lucide="trending-up" class="nav-icon"></i>
+        <div class="nav-label">
+          <div>ATOM Market Intent</div>
+          <div class="nav-desc">Market signals & intent</div>
+        </div>
+      </div>
+      <div class="nav-item" data-page="prospects" onclick="navigate('prospects',this)">
+        <i data-lucide="users" class="nav-icon"></i>
+        <div class="nav-label">
+          <div>ATOM Prospect</div>
+          <div class="nav-desc">Lead enrichment engine</div>
+        </div>
+      </div>
+      <div class="nav-item" data-page="intel" onclick="navigate('intel',this)">
+        <i data-lucide="building-2" class="nav-icon"></i>
+        <div class="nav-label">
+          <div>ATOM WarBook</div>
+          <div class="nav-desc">Target account intel</div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Sidebar footer -->
+    <div style="padding:12px 14px;border-top:1px solid var(--dg-border-subtle);">
+      <div class="avant-badge">
+        <i data-lucide="award" style="width:10px;height:10px;"></i>
+        Trusted Advisor™ · AVANT
+      </div>
+      <div style="font-size:10px;color:var(--dg-text-faint);margin-top:8px;">350+ Vetted Providers · thedeadygroup.com</div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="main-area">
+    <!-- Top bar -->
+    <header class="topbar">
+      <button onclick="toggleSidebar()" style="color:var(--dg-text-muted);cursor:pointer;background:none;border:none;padding:4px;" title="Toggle sidebar">
+        <i data-lucide="panel-left" style="width:18px;height:18px;"></i>
+      </button>
+      <div style="flex:1;">
+        <div class="topbar-title" id="topbarTitle">Command Center</div>
+        <div class="topbar-sub" id="topbarSub">The Deady Group · ATOM Sales Intelligence</div>
+      </div>
+      <div class="token-badge">
+        <span class="used" id="tokenUsed">0</span><span>/</span><span>100</span>
+        <i data-lucide="cpu" style="width:10px;height:10px;margin-left:2px;"></i>
+      </div>
+      <div class="avant-badge" id="topAvant" style="display:none;">
+        <i data-lucide="shield-check" style="width:10px;height:10px;"></i>
+        AVANT
+      </div>
+    </header>
+
+    <!-- Content -->
+    <main class="content-area" id="contentArea">
+      <!-- Dashboard page rendered by JS -->
+    </main>
+  </div>
+</div>
+
+<script>
+// ===== STATE =====
+let currentPage = 'dashboard';
+let pitchHistory = [];
+let objHistory = [];
+let tokenCount = 0;
+
+const PRODUCTS = [
+  { value: 'pots-replacement', label: 'POTS Replacement & Voice Modernization' },
+  { value: 'cloud-voice', label: 'Cloud Voice & Collaboration' },
+  { value: 'cloud-infra', label: 'Cloud Infrastructure & Migrations' },
+  { value: 'cybersecurity', label: 'Cybersecurity & Ransomware Protection' },
+  { value: 'connectivity', label: 'Connectivity & SD-WAN' },
+  { value: 'data-center', label: 'Data Center & Colocation Strategy' },
+  { value: 'custom', label: 'Custom Solution' },
+];
+
+const PITCH_TYPES = [
+  { value: 'cold-call', label: 'Cold Call Opening', desc: 'Phone opener that hooks in 10 sec' },
+  { value: 'email-intro', label: 'Email Intro', desc: 'Cold outreach that gets replies' },
+  { value: 'linkedin-dm', label: 'LinkedIn DM', desc: 'Social selling message' },
+  { value: 'follow-up', label: 'Follow-Up', desc: 'Re-engage a cold prospect' },
+  { value: 'demo-setup', label: 'Demo Setup', desc: 'Qualify and book the demo' },
+  { value: 'executive-summary', label: 'Executive Summary', desc: 'C-suite level brief' },
+  { value: 'pain-probe', label: 'Pain Point Probe', desc: 'Diagnose their real problem' },
+];
+
+const PERSONAS = [
+  'CIO / CTO', 'CISO / Security Director', 'IT Director', 'Network Manager',
+  'Procurement Director', 'CFO / Finance', 'Operations Director', 'Government IT Director',
+  'Healthcare IT Manager', 'K-12 / Higher Ed IT', 'Startup Founder / CTO', 'General Manager',
+];
+
+const OBJECTIONS_QUICK = [
+  { label: 'Price', desc: 'Too expensive' },
+  { label: 'Competition', desc: 'Already have a vendor' },
+  { label: 'Timing', desc: 'Not right now' },
+  { label: 'Authority', desc: 'Need to check with team' },
+  { label: 'Need', desc: 'Don\'t see the need' },
+  { label: 'Trust', desc: 'Don\'t know you' },
+];
+
+const INDUSTRIES = [
+  'State & Local Government', 'Healthcare & Life Sciences', 'K-12 Education',
+  'Higher Education', 'Startups & SaaS', 'Financial Services', 'Manufacturing',
+  'Professional Services', 'Retail / Commerce', 'Hospitality', 'Non-Profit',
+];
+
+// ===== NAVIGATION =====
+function navigate(page, el) {
+  currentPage = page;
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (el) el.classList.add('active');
+
+  const titles = {
+    dashboard: ['Command Center', 'The Deady Group · ATOM Sales Intelligence'],
+    pitch: ['ATOM Pitch', 'AI-powered precision pitching for regulated industries'],
+    objections: ['ATOM Objection Handler', 'Neutralize any objection — compliance-aware counter-strategies'],
+    market: ['ATOM Market Intent', 'Real-time market signals · buying intent · competitive moves'],
+    prospects: ['ATOM Prospect', 'Surface high-intent leads · Apollo Pro · Hunter.io · PDL enrichment'],
+    intel: ['ATOM WarBook', 'Full account intelligence — pitch · objections · intent · playbook'],
+  };
+
+  const [title, sub] = titles[page] || ['Page', ''];
+  document.getElementById('topbarTitle').textContent = title;
+  document.getElementById('topbarSub').textContent = sub;
+
+  renderPage(page);
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('collapsed');
+}
+
+// ===== TOKEN COUNTER =====
+function addTokens(n) {
+  tokenCount = Math.min(100, tokenCount + n);
+  document.getElementById('tokenUsed').textContent = tokenCount;
+}
+
+// ===== RENDER ENGINE =====
+function renderPage(page) {
+  const area = document.getElementById('contentArea');
+  const pages = {
+    dashboard: renderDashboard,
+    pitch: renderPitch,
+    objections: renderObjections,
+    market: renderMarket,
+    prospects: renderProspects,
+    intel: renderIntel,
+  };
+  area.innerHTML = '';
+  const wrapper = document.createElement('div');
+  wrapper.className = 'page';
+  wrapper.innerHTML = (pages[page] || renderDashboard)();
+  area.appendChild(wrapper);
+  lucide.createIcons();
+  attachPageEvents(page);
+}
+
+// ===== DASHBOARD =====
+function renderDashboard() {
+  return `
+  <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+    <div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+        <span class="page-title">Command Center</span>
+        <span class="badge badge-teal">
+          <span class="signal-dot" style="width:6px;height:6px;"></span>
+          LIVE
+        </span>
+      </div>
+      <div class="page-subtitle">The Deady Group · Sales Dominator · Trusted Advisor™ powered by AVANT</div>
+    </div>
+    <div class="avant-badge">
+      <i data-lucide="award" style="width:10px;height:10px;"></i>
+      350+ Vetted Providers
+    </div>
+  </div>
+
+  <!-- KPI stats -->
+  <div class="grid-4" style="margin-bottom:16px;">
+    <div class="stat-card">
+      <div class="stat-icon-wrap" style="background:rgba(74,143,191,0.12);">
+        <i data-lucide="package" style="width:16px;height:16px;color:#4A8FBF;"></i>
+      </div>
+      <div class="stat-value">${PRODUCTS.length}</div>
+      <div class="stat-label">Solutions</div>
+      <div class="stat-desc">In portfolio</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon-wrap" style="background:rgba(239,68,68,0.12);">
+        <i data-lucide="bot" style="width:16px;height:16px;color:#f87171;"></i>
+      </div>
+      <div class="stat-value">4</div>
+      <div class="stat-label">AI Agents</div>
+      <div class="stat-desc">Ready to deploy</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon-wrap" style="background:rgba(52,211,153,0.12);">
+        <i data-lucide="zap" style="width:16px;height:16px;color:#34d399;"></i>
+      </div>
+      <div class="stat-value">${PITCH_TYPES.length}</div>
+      <div class="stat-label">Pitch Types</div>
+      <div class="stat-desc">Generation modes</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon-wrap" style="background:rgba(245,158,11,0.12);">
+        <i data-lucide="building-2" style="width:16px;height:16px;color:#fbbf24;"></i>
+      </div>
+      <div class="stat-value">4</div>
+      <div class="stat-label">Verticals</div>
+      <div class="stat-desc">Market coverage</div>
+    </div>
+  </div>
+
+  <!-- Quick actions -->
+  <div style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--dg-text-muted);margin-bottom:10px;">Quick Actions</div>
+  <div class="grid-4" style="margin-bottom:20px;">
+    <div class="action-card" onclick="navigate('pitch', document.querySelector('[data-page=pitch]'))">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+        <i data-lucide="zap" style="width:16px;height:16px;color:var(--dg-teal);"></i>
+        <div class="action-card-name">ATOM Pitch</div>
+      </div>
+      <div class="action-card-desc">AI pitch creation engine</div>
+    </div>
+    <div class="action-card" onclick="navigate('objections', document.querySelector('[data-page=objections]'))">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+        <i data-lucide="shield" style="width:16px;height:16px;color:#f87171;"></i>
+        <div class="action-card-name">ATOM Objection Handler</div>
+      </div>
+      <div class="action-card-desc">Neutralize any objection</div>
+    </div>
+    <div class="action-card" onclick="navigate('market', document.querySelector('[data-page=market]'))">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+        <i data-lucide="trending-up" style="width:16px;height:16px;color:#fbbf24;"></i>
+        <div class="action-card-name">ATOM Market Intent</div>
+      </div>
+      <div class="action-card-desc">Real-time market signals</div>
+    </div>
+    <div class="action-card" onclick="navigate('intel', document.querySelector('[data-page=intel]'))">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+        <i data-lucide="building-2" style="width:16px;height:16px;color:#a78bfa;"></i>
+        <div class="action-card-name">ATOM WarBook</div>
+      </div>
+      <div class="action-card-desc">Full account intel — one search</div>
+    </div>
+  </div>
+
+  <!-- Solutions & Sectors side by side -->
+  <div class="grid-2" style="margin-bottom:16px;">
+    <div class="card">
+      <div class="card-title">Ecosystem Solutions</div>
+      ${PRODUCTS.map(p => `
+        <div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--dg-border-subtle);">
+          <i data-lucide="check-circle-2" style="width:13px;height:13px;color:var(--dg-teal);flex-shrink:0;"></i>
+          <span style="font-size:12px;color:var(--dg-text-muted);">${p.label}</span>
+        </div>
+      `).join('')}
+    </div>
+    <div class="card">
+      <div class="card-title">Regulated Sectors</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;padding:4px 0;">
+        <span class="badge badge-teal">State & Local Gov</span>
+        <span class="badge badge-blue">Healthcare / Life Sci</span>
+        <span class="badge badge-amber">K-12 Education</span>
+        <span class="badge badge-green">Higher Education</span>
+        <span class="badge badge-teal">Startups & SaaS</span>
+        <span class="badge badge-blue">Financial Services</span>
+        <span class="badge badge-amber">Manufacturing</span>
+        <span class="badge badge-green">Non-Profit</span>
+      </div>
+      <hr class="dg-divider" style="margin-top:14px;">
+      <div class="card-title" style="margin-top:12px;">Core Strengths</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <i data-lucide="shield-check" style="width:13px;height:13px;color:var(--dg-teal);"></i>
+          <span style="font-size:12px;color:var(--dg-text-muted);">HIPAA · FedRAMP · SOC 2 · FERPA · CIPA aligned</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <i data-lucide="network" style="width:13px;height:13px;color:var(--dg-teal);"></i>
+          <span style="font-size:12px;color:var(--dg-text-muted);">350+ vetted provider ecosystem</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <i data-lucide="handshake" style="width:13px;height:13px;color:var(--dg-teal);"></i>
+          <span style="font-size:12px;color:var(--dg-text-muted);">No-pressure vendor-neutral guidance</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pitch history preview -->
+  ${pitchHistory.length > 0 ? `
+  <div class="card">
+    <div class="card-title">Recent Pitches</div>
+    ${pitchHistory.slice(0,3).map(p => `
+      <div class="history-item" style="margin-bottom:6px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2px;">
+          <span style="font-size:12px;font-weight:600;">${p.product} · ${p.type}</span>
+          <span class="badge badge-teal">${p.persona}</span>
+        </div>
+        <div style="font-size:11px;color:var(--dg-text-faint);">${p.preview}</div>
+      </div>
+    `).join('')}
+  </div>
+  ` : ''}
+  `;
+}
+
+// ===== PITCH GENERATOR =====
+function renderPitch() {
+  return `
+  <div class="page-header">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+      <span class="page-title">ATOM Pitch</span>
+      <span class="badge badge-dg">AI-Powered</span>
+    </div>
+    <div class="page-subtitle">Precision pitching for regulated industries — powered by AVANT</div>
+  </div>
+
+  <div class="flex-row">
+    <!-- Config panel -->
+    <div style="width:300px;flex-shrink:0;display:flex;flex-direction:column;gap:12px;">
+      <div class="card">
+        <div class="card-title">Configuration</div>
+        
+        <div class="form-row">
+          <label class="form-label"><i data-lucide="package" style="width:10px;height:10px;"></i> Solution</label>
+          <select class="form-select" id="pitchProduct">
+            <option value="">Select solution...</option>
+            ${PRODUCTS.map(p => `<option value="${p.value}">${p.label}</option>`).join('')}
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label class="form-label"><i data-lucide="user" style="width:10px;height:10px;"></i> Target Persona</label>
+          <select class="form-select" id="pitchPersona">
+            <option value="">Select persona...</option>
+            ${PERSONAS.map(p => `<option value="${p}">${p}</option>`).join('')}
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label class="form-label"><i data-lucide="zap" style="width:10px;height:10px;"></i> Pitch Type</label>
+          <div style="display:flex;flex-direction:column;gap:6px;" id="pitchTypeGrid">
+            ${PITCH_TYPES.map(t => `
+              <div class="chip" data-pitch-type="${t.value}" onclick="selectPitchType('${t.value}',this)">
+                <span>${t.label}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label class="form-label"><i data-lucide="sliders" style="width:10px;height:10px;"></i> Tone</label>
+          <select class="form-select" id="pitchTone">
+            <option value="consultative">Consultative</option>
+            <option value="direct">Direct & Bold</option>
+            <option value="empathetic">Empathetic</option>
+            <option value="challenger">Challenger</option>
+            <option value="executive">Executive</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label class="form-label">Context <span style="color:var(--dg-text-faint);font-size:9px;">(optional)</span></label>
+          <textarea class="form-textarea" id="pitchContext" placeholder="Add any context about the prospect, their challenges, or specific compliance needs..." style="min-height:60px;"></textarea>
+        </div>
+
+        <button class="btn btn-primary" id="genPitchBtn" onclick="generatePitch()" style="width:100%;">
+          <i data-lucide="zap" style="width:14px;height:14px;"></i>
+          Generate Pitch
+        </button>
+      </div>
+    </div>
+
+    <!-- Output panel -->
+    <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:12px;">
+      <div class="card" id="pitchOutput" style="flex:1;">
+        <div id="pitchOutputContent">
+          <div class="empty-state">
+            <i data-lucide="zap" class="empty-icon"></i>
+            <div class="empty-title">Configure your pitch parameters</div>
+            <div class="empty-desc">Select solution, persona, and type to get started</div>
+          </div>
+        </div>
+      </div>
+
+      ${pitchHistory.length > 0 ? `
+      <div class="card">
+        <div class="card-title">Pitch History</div>
+        ${pitchHistory.slice(0,5).map((p,i) => `
+          <div class="history-item" style="margin-bottom:6px;" onclick="showHistoryPitch(${i})">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <span style="font-size:12px;font-weight:600;">${p.product} · ${p.type}</span>
+              <span class="badge badge-teal" style="font-size:9px;">${p.persona}</span>
+            </div>
+            <div style="font-size:11px;color:var(--dg-text-faint);margin-top:2px;">${p.preview}</div>
+          </div>
+        `).join('')}
+      </div>
+      ` : ''}
+    </div>
+  </div>
+  `;
+}
+
+let selectedPitchType = '';
+function selectPitchType(val, el) {
+  document.querySelectorAll('[data-pitch-type]').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedPitchType = val;
+}
+
+function generatePitch() {
+  const product = document.getElementById('pitchProduct')?.value;
+  const persona = document.getElementById('pitchPersona')?.value;
+  const tone = document.getElementById('pitchTone')?.value;
+  const context = document.getElementById('pitchContext')?.value;
+
+  if (!product || !persona || !selectedPitchType) {
+    showMsg('pitchOutputContent', 'Please select a solution, persona, and pitch type.', 'warning');
+    return;
+  }
+
+  const productLabel = PRODUCTS.find(p=>p.value===product)?.label || product;
+  const typeLabel = PITCH_TYPES.find(t=>t.value===selectedPitchType)?.label || selectedPitchType;
+
+  const btn = document.getElementById('genPitchBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner"></div> Generating...';
+
+  document.getElementById('pitchOutputContent').innerHTML = `
+    <div class="ai-thinking">
+      <div class="spinner"></div>
+      <span>AI is crafting your precision pitch for <strong>${persona}</strong>...</span>
+    </div>
+  `;
+  lucide.createIcons();
+
+  setTimeout(() => {
+    const pitch = buildPitchContent(productLabel, persona, typeLabel, tone, context);
+    addTokens(8);
+
+    document.getElementById('pitchOutputContent').innerHTML = pitch;
+    lucide.createIcons();
+    btn.disabled = false;
+    btn.innerHTML = '<i data-lucide="zap" style="width:14px;height:14px;"></i> Generate Pitch';
+    lucide.createIcons();
+
+    // Save to history
+    pitchHistory.unshift({
+      product: productLabel,
+      type: typeLabel,
+      persona,
+      preview: document.querySelector('#pitchOutputContent .main-pitch-text')?.textContent?.slice(0,80) + '...' || '',
+      content: pitch
+    });
+  }, 1800);
+}
+
+function buildPitchContent(product, persona, type, tone, context) {
+  const pitches = {
+    'Cold Call Opening': {
+      main: `"Hey ${persona}! I know you get a ton of calls, so I'll be quick — I'm Will with The Deady Group, a Trusted Advisor™ powered by AVANT. We work exclusively with regulated organizations to modernize their tech stack while cutting complexity. Your peers in [Industry] are hitting compliance walls with legacy infrastructure right now — I've helped 3 similar orgs resolve that in 60 days. Do you have 90 seconds for me to share what's working?"`,
+      phrases: ['Trusted Advisor™ powered by AVANT', 'Vendor-neutral guidance', '350+ vetted providers', 'Compliance-first approach'],
+      alternatives: ['Lead with a relevant compliance trigger (e.g., POTS sunset deadline)', 'Reference a regional peer organization by name', 'Open with a cost-savings stat specific to their vertical'],
+    },
+    'Email Intro': {
+      main: `Subject: Quick win for ${persona} — ${product}\n\nHi [First Name],\n\nMost ${persona}s I talk to are juggling [key challenge] while trying to keep costs in check and stay compliant. That's exactly why we built The Deady Group — a Trusted Advisor™ powered by AVANT with access to 350+ vetted providers.\n\nWe specialize in ${product} for regulated and innovation-driven organizations like yours. I'd love to share how [Peer Org] reduced their infrastructure cost 28% while improving compliance posture.\n\nWorth a 15-minute call this week?\n\nWill Deady\nThe Deady Group · Trusted Advisor™ powered by AVANT`,
+      phrases: ['No-pressure, no-commission-bias guidance', 'Compliance-aligned outcomes', 'Peer benchmarks available'],
+      alternatives: ['Include a compliance checklist as an attachment', 'Reference their specific tech stack if known', 'Use a PS line with a time-sensitive hook'],
+    },
+    'LinkedIn DM': {
+      main: `Hi [First Name] — saw your role at [Company] and thought this might be timely. We help ${persona}s in [Industry] cut through vendor noise and find the right ${product} solution — compliantly and cost-effectively. As a Trusted Advisor™ powered by AVANT, we're completely vendor-neutral. Worth a quick connect?`,
+      phrases: ['Vendor-neutral', 'No selling software', 'Just guiding decisions'],
+      alternatives: ['Comment on a recent post of theirs first', 'Reference a mutual connection', 'Lead with an industry stat'],
+    },
+    'Follow-Up': {
+      main: `Hi [First Name],\n\nFollowing up from our last conversation — wanted to share a quick update that's relevant to your situation. We're seeing a significant wave of [compliance trigger / POTS sunset / ransomware spike] across your sector right now, and organizations that are proactive are saving 30-40% vs reactive replacements.\n\nI have a resource specific to ${persona}s in your industry I'd like to send over — no strings attached. Still the right time to connect?`,
+      phrases: ['No-pressure', 'Proactive vs reactive', 'Industry-specific insights'],
+      alternatives: ['Attach the relevant checklist (SOC, Cyber Insurance, POTS)', 'Reference a deadline or regulatory date', 'Offer a peer intro instead of a pitch'],
+    },
+    'Demo Setup': {
+      main: `"Before I show you anything, I want to make sure we're solving the right problem. Can you walk me through your current ${product} setup and where it's creating friction? I ask because The Deady Group has access to 350+ providers — we want to bring you the 2-3 options that actually fit your compliance requirements and budget, not just what we're pushing this quarter."`,
+      phrases: ['Discovery-first approach', 'Compliance-first filtering', 'No vendor bias'],
+      alternatives: ['Send pre-call checklist to qualify requirements', 'Have them self-score their readiness', 'Propose a structured evaluation framework'],
+    },
+    'Executive Summary': {
+      main: `EXECUTIVE BRIEFING — The Deady Group\n\nFor: ${persona}\nRe: ${product} Strategy\n\nSituation: Organizations across regulated verticals face mounting pressure from aging infrastructure, expanding compliance requirements, and growing cyber threats — often without the internal bandwidth to evaluate 350+ available solutions.\n\nRecommendation: A structured Discovery engagement with The Deady Group (Trusted Advisor™ · AVANT) to assess current state, identify gaps, and build a vendor-neutral roadmap aligned to your regulatory environment.\n\nExpected Outcomes: Risk reduction · Cost optimization · Compliance alignment · Future-proof architecture\n\nNext Step: 30-minute Executive Discovery Call`,
+      phrases: ['Vendor-neutral roadmap', 'Compliance-first', 'Risk reduction + cost optimization'],
+      alternatives: ['Lead with a compliance gap analysis offer', 'Include ROI benchmarks from peer organizations', 'Attach the relevant readiness checklist'],
+    },
+    'Pain Point Probe': {
+      main: `"${persona}, let me ask you something directly — when it comes to [${product}], what's causing the most pain right now? Is it the compliance exposure, the cost unpredictability, or the lack of internal bandwidth to properly evaluate vendors? I ask because the answer completely changes my recommendation, and I'd rather get it right than sell you something you'll regret in 6 months."`,
+      phrases: ['Consultative challenger', 'Compliance exposure', 'Vendor evaluation complexity'],
+      alternatives: ['Use a pre-call survey to identify pain ahead of time', 'Reference a specific compliance event in their sector', 'Ask about their last vendor decision process'],
+    },
+  };
+
+  const fallback = {
+    main: `"As The Deady Group — a Trusted Advisor™ powered by AVANT — our role is simple: we help ${persona}s like you cut through the noise of 350+ technology vendors and find the ${product} solution that's right for your compliance posture, your budget, and your timeline. No pressure. No vendor bias. Just the right fit."`,
+    phrases: ['Trusted Advisor™ powered by AVANT', 'Vendor-neutral', 'Compliance-first'],
+    alternatives: ['Lead with a compliance trigger specific to their sector', 'Reference POTS sunset or cyber insurance requirements', 'Ask a diagnostic question first'],
+  };
+
+  const data = pitches[type] || fallback;
+  const score = Math.floor(Math.random() * 15) + 80;
+  const toneMap = { consultative: 'Consultative / Advisory', direct: 'Direct & Assertive', empathetic: 'Empathetic / Warm', challenger: 'Challenger / Disruptive', executive: 'Executive / Strategic' };
+  const toneLabel = toneMap[tone] || tone;
+  const scoreStyle = `--score: ${score}%`;
+
+  return `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span class="badge badge-teal">${type}</span>
+        <span class="badge badge-blue">${persona}</span>
+        <span class="badge badge-green">${product}</span>
+      </div>
+      <button onclick="copyPitch()" class="btn btn-outline" style="height:28px;font-size:11px;gap:4px;">
+        <i data-lucide="copy" style="width:12px;height:12px;"></i>Copy
+      </button>
+    </div>
+
+    <div style="display:flex;gap:14px;align-items:center;margin-bottom:16px;">
+      <div class="score-ring" style="${scoreStyle}">
+        <span class="score-value">${score}</span>
+      </div>
+      <div>
+        <div style="font-size:12px;font-weight:700;color:var(--dg-text);">AI Confidence Score</div>
+        <div style="font-size:11px;color:var(--dg-text-faint);">Emotional Tone: ${toneLabel}</div>
+      </div>
+      <div style="flex:1;"></div>
+      <div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--dg-text-faint);margin-bottom:4px;">Sentiment Balance</div>
+        <div class="sentiment-bar" style="width:200px;">
+          <div class="sentiment-fill" style="width:${score}%;background:linear-gradient(to right,rgba(74,143,191,0.4),rgba(52,211,153,0.8));"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="result-box" style="margin-bottom:12px;">
+      <div class="result-heading"><i data-lucide="message-square" style="width:11px;height:11px;"></i> Generated Pitch</div>
+      <div class="main-pitch-text" style="white-space:pre-line;line-height:1.7;">${data.main}</div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+      <div class="result-box">
+        <div class="result-heading"><i data-lucide="star" style="width:11px;height:11px;"></i> Power Phrases</div>
+        ${data.phrases.map(p => `<div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:5px;font-size:12px;"><i data-lucide="chevron-right" style="width:12px;height:12px;color:var(--dg-teal);flex-shrink:0;margin-top:1px;"></i>${p}</div>`).join('')}
+      </div>
+      <div class="result-box">
+        <div class="result-heading"><i data-lucide="shuffle" style="width:11px;height:11px;"></i> Alternative Approaches</div>
+        ${data.alternatives.map(a => `<div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:5px;font-size:12px;"><i data-lucide="arrow-right" style="width:12px;height:12px;color:var(--dg-teal-light);flex-shrink:0;margin-top:1px;"></i>${a}</div>`).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function copyPitch() {
+  const text = document.querySelector('.main-pitch-text')?.textContent;
+  if (text) {
+    navigator.clipboard.writeText(text).catch(() => {});
+    showToast('Pitch copied to clipboard');
+  }
+}
+
+// ===== OBJECTION HANDLER =====
+function renderObjections() {
+  return `
+  <div class="page-header">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+      <span class="page-title">ATOM Objection Handler</span>
+      <span class="badge badge-red">Counter Any Pushback</span>
+    </div>
+    <div class="page-subtitle">Neutralize any objection with AI-precision counter-strategies</div>
+  </div>
+
+  <div class="flex-row">
+    <div style="width:300px;flex-shrink:0;display:flex;flex-direction:column;gap:12px;">
+      <div class="card">
+        <div class="card-title">Objection Details</div>
+        
+        <div class="form-row">
+          <label class="form-label">Quick Select</label>
+          <div style="display:flex;flex-wrap:wrap;gap:5px;" id="objQuickSelect">
+            ${OBJECTIONS_QUICK.map(o => `
+              <div class="chip" onclick="quickSelectObj('${o.label}',this)" title="${o.desc}">${o.label}</div>
+            `).join('')}
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label class="form-label"><i data-lucide="package" style="width:10px;height:10px;"></i> Solution Context</label>
+          <select class="form-select" id="objProduct">
+            <option value="">Select solution...</option>
+            ${PRODUCTS.map(p => `<option value="${p.value}">${p.label}</option>`).join('')}
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label class="form-label">The Objection</label>
+          <textarea class="form-textarea" id="objText" placeholder="Paste exactly what the prospect said..." style="min-height:100px;"></textarea>
+        </div>
+
+        <button class="btn btn-primary" id="handleObjBtn" onclick="handleObjection()" style="width:100%;">
+          <i data-lucide="shield" style="width:14px;height:14px;"></i>
+          Handle Objection
+        </button>
+      </div>
+    </div>
+
+    <div style="flex:1;min-width:0;">
+      <div class="card" id="objOutput">
+        <div id="objOutputContent">
+          <div class="empty-state">
+            <i data-lucide="shield" class="empty-icon"></i>
+            <div class="empty-title">Enter an objection to get your counter-response</div>
+            <div class="empty-desc">Select solution and paste what the prospect said</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  `;
+}
+
+function quickSelectObj(label, el) {
+  document.querySelectorAll('#objQuickSelect .chip').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  const ta = document.getElementById('objText');
+  const objMap = {
+    'Price': "It's too expensive for our budget right now.",
+    'Competition': "We already have a vendor in place for that.",
+    'Timing': "Now's not a great time — maybe next quarter.",
+    'Authority': "I'd need to loop in my team before making any decisions.",
+    'Need': "Honestly, I'm not sure we actually have that problem.",
+    'Trust': "I'm not familiar with The Deady Group.",
+  };
+  if (ta) ta.value = objMap[label] || label;
+}
+
+function handleObjection() {
+  const text = document.getElementById('objText')?.value?.trim();
+  const product = document.getElementById('objProduct')?.value;
+
+  if (!text) {
+    showMsg('objOutputContent', 'Please enter the objection text.', 'warning');
+    return;
+  }
+
+  const btn = document.getElementById('handleObjBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner"></div> Analyzing...';
+
+  document.getElementById('objOutputContent').innerHTML = `
+    <div class="ai-thinking">
+      <div class="spinner"></div>
+      <span>Analyzing objection and crafting counter-response...</span>
+    </div>
+  `;
+  lucide.createIcons();
+
+  setTimeout(() => {
+    const response = buildObjectionResponse(text, product);
+    addTokens(6);
+    document.getElementById('objOutputContent').innerHTML = response;
+    lucide.createIcons();
+    btn.disabled = false;
+    btn.innerHTML = '<i data-lucide="shield" style="width:14px;height:14px;"></i> Handle Objection';
+    lucide.createIcons();
+  }, 1600);
+}
+
+function buildObjectionResponse(text, product) {
+  const productLabel = PRODUCTS.find(p=>p.value===product)?.label || 'this solution';
+  const lowerText = text.toLowerCase();
+
+  let type = 'general';
+  if (lowerText.includes('expensive') || lowerText.includes('budget') || lowerText.includes('cost') || lowerText.includes('price')) type = 'price';
+  else if (lowerText.includes('already have') || lowerText.includes('vendor') || lowerText.includes('competitor')) type = 'competition';
+  else if (lowerText.includes('time') || lowerText.includes('quarter') || lowerText.includes('busy') || lowerText.includes('not now')) type = 'timing';
+  else if (lowerText.includes('team') || lowerText.includes('decision') || lowerText.includes('authority') || lowerText.includes('approve')) type = 'authority';
+  else if (lowerText.includes('know') || lowerText.includes('familiar') || lowerText.includes('trust') || lowerText.includes('heard')) type = 'trust';
+
+  const responses = {
+    price: {
+      sentiment: 72,
+      tone: 'Empathetic → Challenger',
+      main: `"That's completely fair — and honestly the first thing I always want to address. Here's the thing about working with The Deady Group: we're vendor-neutral, which means we have no financial incentive to push you to the most expensive option. We have access to 350+ providers across every price tier.\n\nWhat I've found with ${productLabel} specifically is that most organizations are overpaying by 20-35% because they went direct to vendors without a neutral benchmark. Our entire value is finding the right fit at the right price — not the most expensive option.\n\nCan we do a quick 20-minute cost benchmarking call? No commitment, just clarity."`,
+      acknowledge: 'Budget constraints are real and valid — especially in regulated environments.',
+      reframe: 'The real question is whether current spend is optimized — most orgs we analyze are overpaying.',
+      prove: 'We\'ve helped organizations reduce their ${productLabel} cost by 20-35% through vendor-neutral evaluation.',
+    },
+    competition: {
+      sentiment: 65,
+      tone: 'Challenger / Confident',
+      main: `"I completely respect that. The fact that you have a solution in place tells me you recognized the need — that's already ahead of most. My only question is: when's the last time that contract was benchmarked against the current market? \n\nThe vendor landscape for ${productLabel} has shifted significantly in 18 months — new compliance requirements, new pricing models, and frankly some vendors that were gold standards two years ago are now falling behind. \n\nI'm not asking you to switch anything. I'm asking for 20 minutes to give you a no-strings market comparison so you can walk into your next renewal armed with real leverage. Sound fair?"`,
+      acknowledge: 'Having an existing vendor shows you\'re proactive — that\'s a good sign.',
+      reframe: 'The question isn\'t whether to switch — it\'s whether you\'re getting the best terms and protection.',
+      prove: 'Benchmark your current contract against 350+ providers — most discover 15-30% savings or missed compliance coverage.',
+    },
+    timing: {
+      sentiment: 60,
+      tone: 'Empathetic / Urgency-Based',
+      main: `"I hear you — and I want to respect your time. But let me share why I'm reaching out specifically now: the POTS copper network sunset and new compliance requirements around ${productLabel} have a hard deadline that's already passed for some organizations and approaching fast for others. \n\nThe cost of proactive planning versus reactive scrambling is enormous — organizations that wait are paying 30-50% more and facing compliance gaps that create real liability. \n\nI'm not asking for a decision. I'm asking for 15 minutes to walk you through where your organization sits on the readiness curve so you can make an informed choice. Even if the timing isn't right, you'll have the information you need."`,
+      acknowledge: 'Timing is everything — and I wouldn\'t reach out unless the window mattered.',
+      reframe: 'Regulatory and infrastructure deadlines don\'t adjust to internal calendars.',
+      prove: 'Organizations that planned 90+ days ahead saved 30-50% vs those who scrambled reactively.',
+    },
+    authority: {
+      sentiment: 78,
+      tone: 'Supportive / Coalition-Building',
+      main: `"That's actually music to my ears — it tells me you're the kind of professional who brings the right people in before making decisions. Exactly the type of partner we want to work with.\n\nHere's what I'd suggest: let me send you our ${productLabel} executive brief — it's specifically designed for team conversations, covers compliance implications, cost benchmarks, and vendor comparison framework. You'll have everything you need to lead an informed internal discussion.\n\nWho else on your team would benefit from getting this? I can address it to you and your key stakeholder directly."`,
+      acknowledge: 'Getting the right stakeholders involved is exactly the right approach.',
+      reframe: 'Let\'s equip you with what you need to champion this internally.',
+      prove: 'Our executive brief format is built for multi-stakeholder decisions — compliance, IT, and finance.',
+    },
+    trust: {
+      sentiment: 70,
+      tone: 'Transparent / Credibility-First',
+      main: `"Completely understandable — and I'd rather you say that than just go quiet. Let me be transparent: The Deady Group is a Trusted Advisor™ powered by AVANT, one of the largest technology advisory platforms in North America. We don't sell software — we guide decisions. We have zero financial incentive to push any specific vendor over another.\n\nOur access to 350+ vetted providers means we show up to every engagement with the market's full picture. Our process starts with deep discovery — understanding your compliance requirements, your budget, your environment — before we ever make a recommendation.\n\nWould it help if I shared a case study from a similar organization in your sector — same size, same compliance requirements? Sometimes seeing exactly what we did for a peer speaks louder than anything I can say."`,
+      acknowledge: 'Trust is earned — and you\'re right to require it before any engagement.',
+      reframe: 'We\'re a Trusted Advisor™, not a vendor — our value is guiding decisions, not selling software.',
+      prove: 'AVANT ecosystem + 350+ providers + compliance-first process = verifiable track record.',
+    },
+    general: {
+      sentiment: 75,
+      tone: 'Consultative / Direct',
+      main: `"I appreciate you being direct — that actually makes this conversation better. Here's my honest take: ${text.slice(0,60)}${text.length>60?'...':''} is a signal we take seriously, not something to bulldoze past.\n\nAt The Deady Group, our entire approach starts with understanding exactly what's driving that concern. As a Trusted Advisor™ powered by AVANT, we have no vendor bias — so if there's a real constraint here, we want to find a path that actually works for you, not just close a deal.\n\nCan you help me understand what's behind this a bit more? I'd rather surface the real issue and solve it than patch over a symptom."`,
+      acknowledge: 'Every concern signals something real — we start by understanding, not overcoming.',
+      reframe: 'Our value is finding solutions that fit your actual constraints — not selling past them.',
+      prove: 'Vendor-neutral guidance means we can pivot to match your real requirements.',
+    },
+  };
+
+  const r = responses[type] || responses.general;
+  const sentBar = `width:${r.sentiment}%`;
+
+  return `
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap;">
+      <span class="badge badge-red">Objection Detected</span>
+      <span class="badge badge-teal">${type.charAt(0).toUpperCase()+type.slice(1)} Type</span>
+    </div>
+
+    <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:14px;flex-wrap:wrap;">
+      <div style="flex:1;min-width:200px;">
+        <div style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--dg-text-faint);margin-bottom:4px;">Their Objection</div>
+        <div class="result-box" style="font-style:italic;color:rgba(232,240,248,0.55);">"${text}"</div>
+      </div>
+      <div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--dg-text-faint);margin-bottom:4px;">Sentiment Analysis</div>
+        <div class="score-ring" style="--score:${r.sentiment}%;">
+          <span class="score-value">${r.sentiment}</span>
+        </div>
+        <div style="font-size:10px;color:var(--dg-text-faint);margin-top:4px;text-align:center;">Receptivity</div>
+      </div>
+    </div>
+
+    <div style="margin-bottom:4px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--dg-teal);">Recommended Tone: ${r.tone}</div>
+
+    <div class="result-box" style="margin-bottom:12px;">
+      <div class="result-heading"><i data-lucide="message-circle" style="width:11px;height:11px;"></i> Primary Response</div>
+      <div style="white-space:pre-line;line-height:1.7;">${r.main}</div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+      <div class="result-box">
+        <div class="result-heading" style="color:#fbbf24;"><i data-lucide="check" style="width:11px;height:11px;"></i> Acknowledge</div>
+        <div style="font-size:12px;">${r.acknowledge}</div>
+      </div>
+      <div class="result-box">
+        <div class="result-heading" style="color:#60a5fa;"><i data-lucide="refresh-cw" style="width:11px;height:11px;"></i> Reframe</div>
+        <div style="font-size:12px;">${r.reframe}</div>
+      </div>
+      <div class="result-box">
+        <div class="result-heading" style="color:#34d399;"><i data-lucide="bar-chart-2" style="width:11px;height:11px;"></i> Prove</div>
+        <div style="font-size:12px;">${r.prove}</div>
+      </div>
+    </div>
+  `;
+}
+
+// ===== MARKET INTENT =====
+function renderMarket() {
+  return `
+  <div class="page-header">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+      <span class="page-title">ATOM Market Intent</span>
+      <span class="badge badge-amber">Intelligence & Trends</span>
+    </div>
+    <div class="page-subtitle">Real-time market signals · buying intent · competitive moves</div>
+  </div>
+
+  <div class="flex-row">
+    <div style="width:280px;flex-shrink:0;display:flex;flex-direction:column;gap:12px;">
+      <div class="card">
+        <div class="card-title">Analysis Parameters</div>
+        
+        <div class="form-row">
+          <label class="form-label">Solution Focus</label>
+          <select class="form-select" id="marketProduct">
+            <option value="all">All Solutions</option>
+            ${PRODUCTS.map(p => `<option value="${p.value}">${p.label}</option>`).join('')}
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label class="form-label">Industry</label>
+          <select class="form-select" id="marketIndustry">
+            <option value="">Select industry...</option>
+            ${INDUSTRIES.map(i => `<option value="${i}">${i}</option>`).join('')}
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label class="form-label">Region</label>
+          <select class="form-select" id="marketRegion">
+            <option value="us">United States</option>
+            <option value="southeast">Southeast</option>
+            <option value="northeast">Northeast</option>
+            <option value="midwest">Midwest</option>
+            <option value="west">West Coast</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label class="form-label">Analysis Type</label>
+          <select class="form-select" id="marketType">
+            <option value="signals">Key Signals</option>
+            <option value="competition">Competition</option>
+            <option value="opportunities">Opportunities</option>
+            <option value="actions">Action Items</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label class="form-label">Time Horizon</label>
+          <select class="form-select" id="marketHorizon">
+            <option value="30">30 Days</option>
+            <option value="90">90 Days</option>
+            <option value="180">6 Months</option>
+            <option value="365">1 Year</option>
+          </select>
+        </div>
+
+        <button class="btn btn-primary" id="analyzeMarketBtn" onclick="analyzeMarket()" style="width:100%;">
+          <i data-lucide="trending-up" style="width:14px;height:14px;"></i>
+          Analyze Intent Signals
+        </button>
+      </div>
+    </div>
+
+    <div style="flex:1;min-width:0;" id="marketOutput">
+      <div class="card">
+        <div class="empty-state">
+          <i data-lucide="trending-up" class="empty-icon"></i>
+          <div class="empty-title">Configure analysis parameters</div>
+          <div class="empty-desc">Select industry, type, and time horizon to generate intelligence</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  `;
+}
+
+function analyzeMarket() {
+  const product = document.getElementById('marketProduct')?.value;
+  const industry = document.getElementById('marketIndustry')?.value;
+  const horizon = document.getElementById('marketHorizon')?.value;
+  const type = document.getElementById('marketType')?.value;
+
+  if (!industry) {
+    document.getElementById('marketOutput').innerHTML = `<div class="card"><div class="ai-thinking" style="color:#fbbf24;border-color:rgba(245,158,11,0.2);background:rgba(245,158,11,0.05);"><i data-lucide="alert-triangle" style="width:14px;height:14px;color:#fbbf24;"></i> Please select an industry.</div></div>`;
+    lucide.createIcons();
+    return;
+  }
+
+  const btn = document.getElementById('analyzeMarketBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner"></div> Scanning...';
+
+  document.getElementById('marketOutput').innerHTML = `
+    <div class="card">
+      <div class="ai-thinking">
+        <div class="spinner"></div>
+        <span>Scanning market signals and competitive intelligence for <strong>${industry}</strong>...</span>
+      </div>
+    </div>
+  `;
+  lucide.createIcons();
+
+  setTimeout(() => {
+    const productLabel = PRODUCTS.find(p=>p.value===product)?.label || 'All Solutions';
+    addTokens(10);
+    document.getElementById('marketOutput').innerHTML = buildMarketOutput(productLabel, industry, horizon, type);
+    lucide.createIcons();
+    btn.disabled = false;
+    btn.innerHTML = '<i data-lucide="trending-up" style="width:14px;height:14px;"></i> Analyze Intent Signals';
+    lucide.createIcons();
+  }, 2200);
+}
+
+function buildMarketOutput(product, industry, horizon, type) {
+  const score = Math.floor(Math.random()*20)+75;
+  const signals = [
+    { title: 'POTS Sunset Urgency', score: 94, desc: `${industry} orgs face hard copper network deadlines — active procurement surge detected.`, hot: true },
+    { title: 'Cyber Insurance Pressure', score: 88, desc: `Carriers tightening requirements for ransomware coverage — creating procurement urgency.`, hot: true },
+    { title: 'Compliance Gap Anxiety', score: 82, desc: `SOC 2 / HIPAA / FedRAMP audit season driving security spend evaluation.`, hot: false },
+    { title: 'Cloud Migration Momentum', score: 77, desc: `${industry} accelerating hybrid cloud adoption post-pandemic infrastructure stress-test.`, hot: false },
+    { title: 'SD-WAN Evaluation Cycle', score: 71, desc: `Multi-site organizations reviewing legacy MPLS contracts as they come up for renewal.`, hot: false },
+  ];
+
+  const competitors = [
+    { name: 'Presidio', move: 'Aggressive pricing push in Gov sector', threat: 'High' },
+    { name: 'CDW', move: 'Expanded cloud practice announcement', threat: 'Medium' },
+    { name: 'ePlus', move: 'New SLED-focused sales team', threat: 'Medium' },
+    { name: 'Carousel Industries', move: 'AVANT competitor partnership expansion', threat: 'Low' },
+  ];
+
+  const opportunities = [
+    { org: `Mid-size ${industry} org`, score: 92, signal: 'POTS RFP published', product: product },
+    { org: `Regional ${industry} provider`, score: 87, signal: 'Cyber insurance renewal approaching', product: product },
+    { org: `State agency (${industry})`, score: 81, signal: 'Budget cycle Q4 procurement window', product: product },
+    { org: `Growing SaaS firm`, score: 74, signal: 'Series B funding — scaling infrastructure', product: product },
+  ];
+
+  return `
+    <div class="flex-col">
+      <div class="card">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
+          <div>
+            <div style="font-size:15px;font-weight:800;margin-bottom:3px;">${industry} Intelligence Report</div>
+            <div style="font-size:11px;color:var(--dg-text-faint);">${product} · ${horizon}-day horizon</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div class="score-ring" style="--score:${score}%;width:50px;height:50px;">
+              <span class="score-value" style="font-size:13px;">${score}</span>
+            </div>
+            <div>
+              <div style="font-size:11px;font-weight:700;color:var(--dg-text);">Market Sentiment</div>
+              <div style="font-size:10px;color:var(--dg-teal);">Bullish / Active</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--dg-text-muted);margin-bottom:8px;">🔥 Key Talking Points</div>
+        ${signals.map(s => `
+          <div style="display:flex;align-items:flex-start;gap:10px;padding:9px 10px;border-radius:8px;background:rgba(255,255,255,0.02);border:1px solid var(--dg-border-subtle);margin-bottom:6px;">
+            <div style="text-align:center;min-width:36px;">
+              <div style="font-size:13px;font-weight:800;color:${s.score>85?'var(--dg-teal)':'var(--dg-text)'};">${s.score}</div>
+              <div style="font-size:9px;color:var(--dg-text-faint);">score</div>
+            </div>
+            <div style="flex:1;">
+              <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px;">
+                <span style="font-size:12px;font-weight:700;">${s.title}</span>
+                ${s.hot ? '<span class="badge badge-red" style="font-size:9px;padding:1px 5px;">HOT</span>' : ''}
+              </div>
+              <div style="font-size:11px;color:var(--dg-text-faint);">${s.desc}</div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">Competitor Moves</div>
+          ${competitors.map(c => `
+            <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 0;border-bottom:1px solid var(--dg-border-subtle);">
+              <div style="flex:1;">
+                <div style="font-size:12px;font-weight:700;">${c.name}</div>
+                <div style="font-size:11px;color:var(--dg-text-faint);">${c.move}</div>
+              </div>
+              <span class="badge ${c.threat==='High'?'badge-red':c.threat==='Medium'?'badge-amber':'badge-green'}">${c.threat}</span>
+            </div>
+          `).join('')}
+        </div>
+
+        <div class="card">
+          <div class="card-title">Scored Opportunities</div>
+          ${opportunities.map(o => `
+            <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 0;border-bottom:1px solid var(--dg-border-subtle);">
+              <div style="flex:1;">
+                <div style="font-size:12px;font-weight:700;">${o.org}</div>
+                <div style="font-size:11px;color:var(--dg-text-faint);">${o.signal}</div>
+              </div>
+              <div style="text-align:right;">
+                <div style="font-size:14px;font-weight:800;color:${o.score>85?'var(--dg-teal)':'var(--dg-text)'};">${o.score}</div>
+                <div style="font-size:9px;color:var(--dg-text-faint);">score</div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ===== PROSPECT ENGINE =====
+function renderProspects() {
+  return `
+  <div class="page-header">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+      <span class="page-title">ATOM Prospect</span>
+      <span class="badge badge-blue">AI-Powered Pipeline</span>
+    </div>
+    <div class="page-subtitle">Surface high-intent prospects · Apollo Pro · Hunter.io · PDL enrichment</div>
+  </div>
+
+  <div class="flex-row">
+    <div style="width:280px;flex-shrink:0;display:flex;flex-direction:column;gap:12px;">
+      <div class="card">
+        <div class="card-title">Search Filters</div>
+
+        <div class="form-row">
+          <label class="form-label">Industry</label>
+          <select class="form-select" id="prospIndustry">
+            <option value="">All Industries</option>
+            ${INDUSTRIES.map(i => `<option value="${i}">${i}</option>`).join('')}
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label class="form-label">Title / Role</label>
+          <select class="form-select" id="prospTitle">
+            <option value="">Any Title</option>
+            ${PERSONAS.map(p => `<option value="${p}">${p}</option>`).join('')}
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label class="form-label">Solution to Pitch <span style="color:var(--dg-text-faint);font-size:9px;">(optional)</span></label>
+          <select class="form-select" id="prospProduct">
+            <option value="">Any Solution</option>
+            ${PRODUCTS.map(p => `<option value="${p.value}">${p.label}</option>`).join('')}
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label class="form-label">Company Size</label>
+          <select class="form-select" id="prospSize">
+            <option value="any">Any Size</option>
+            <option value="smb">SMB (1-200)</option>
+            <option value="mid">Mid-Market (200-1000)</option>
+            <option value="ent">Enterprise (1000+)</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label class="form-label">Geography</label>
+          <select class="form-select" id="prospGeo">
+            <option value="us">United States</option>
+            <option value="southeast">Southeast US</option>
+            <option value="northeast">Northeast US</option>
+            <option value="national">National</option>
+          </select>
+        </div>
+
+        <button class="btn btn-primary" id="scanProspBtn" onclick="scanProspects()" style="width:100%;">
+          <i data-lucide="search" style="width:14px;height:14px;"></i>
+          Scan + Enrich
+        </button>
+      </div>
+    </div>
+
+    <div style="flex:1;min-width:0;" id="prospOutput">
+      <div class="card">
+        <div class="empty-state">
+          <i data-lucide="users" class="empty-icon"></i>
+          <div class="empty-title">Configure your filters above and hit Scan + Enrich</div>
+          <div class="empty-desc">Apollo Pro · Hunter.io · PDL enrichment</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  `;
+}
+
+function scanProspects() {
+  const industry = document.getElementById('prospIndustry')?.value;
+  const title = document.getElementById('prospTitle')?.value;
+  const product = document.getElementById('prospProduct')?.value;
+  const size = document.getElementById('prospSize')?.value;
+
+  const btn = document.getElementById('scanProspBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner"></div> Scanning...';
+
+  document.getElementById('prospOutput').innerHTML = `
+    <div class="card">
+      <div class="ai-thinking">
+        <div class="spinner"></div>
+        <span>Scanning prospects via Apollo Pro · Hunter.io · PDL enrichment...</span>
+      </div>
+      <div style="margin-top:10px;font-size:11px;color:var(--dg-text-faint);">Collecting data…</div>
+    </div>
+  `;
+  lucide.createIcons();
+
+  setTimeout(() => {
+    addTokens(12);
+    const productLabel = PRODUCTS.find(p=>p.value===product)?.label || 'Technology Solutions';
+    document.getElementById('prospOutput').innerHTML = buildProspectOutput(industry||'All Industries', title||'Any Role', productLabel, size);
+    lucide.createIcons();
+    btn.disabled = false;
+    btn.innerHTML = '<i data-lucide="search" style="width:14px;height:14px;"></i> Scan + Enrich';
+    lucide.createIcons();
+  }, 2400);
+}
+
+function buildProspectOutput(industry, title, product, size) {
+  const prospects = [
+    { name: 'Sarah Mitchell', title: 'Director of IT', company: 'Fulton County Gov', score: 94, signals: ['POTS sunset RFP', 'Cyber insurance gap'], status: 'HOT' },
+    { name: 'James Thornton', title: 'CISO', company: 'Piedmont Healthcare', score: 89, signals: ['SOC 2 audit prep', 'Ransomware coverage review'], status: 'HOT' },
+    { name: 'Lisa Park', title: 'IT Director', company: 'Georgia State Univ', score: 82, signals: ['Cloud migration budget', 'FERPA compliance update'], status: 'WARM' },
+    { name: 'David Chen', title: 'CTO', company: 'FinTech Startup ATL', score: 78, signals: ['Series B raised', 'Scaling infrastructure'], status: 'WARM' },
+    { name: 'Angela Torres', title: 'Network Manager', company: 'Savannah City Hall', score: 71, signals: ['Legacy MPLS contract renewal'], status: 'ACTIVE' },
+  ];
+
+  return `
+    <div class="flex-col">
+      <div class="card" style="margin-bottom:0;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
+          <div>
+            <div style="font-size:14px;font-weight:800;">Verified Prospects</div>
+            <div style="font-size:11px;color:var(--dg-text-faint);">${industry} · ${title} · ${product}</div>
+          </div>
+          <div style="display:flex;gap:6px;">
+            <span class="badge badge-teal">${prospects.length} Found</span>
+            <span class="badge badge-green">AVANT Verified</span>
+          </div>
+        </div>
+
+        ${prospects.map(p => `
+          <div class="prospect-card" style="margin-bottom:10px;">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap;">
+              <div style="flex:1;min-width:160px;">
+                <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;">
+                  <div style="width:28px;height:28px;border-radius:50%;background:rgba(74,143,191,0.15);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:var(--dg-teal);flex-shrink:0;">
+                    ${p.name.split(' ').map(n=>n[0]).join('')}
+                  </div>
+                  <div>
+                    <div style="font-size:13px;font-weight:700;">${p.name}</div>
+                    <div style="font-size:11px;color:var(--dg-text-faint);">${p.title} · ${p.company}</div>
+                  </div>
+                </div>
+                <div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:6px;">
+                  ${p.signals.map(s => `<span class="badge badge-teal" style="font-size:9px;">${s}</span>`).join('')}
+                </div>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
+                <span class="badge ${p.status==='HOT'?'badge-red':p.status==='WARM'?'badge-amber':'badge-blue'}">${p.status}</span>
+                <div style="text-align:right;">
+                  <div style="font-size:16px;font-weight:800;color:${p.score>85?'var(--dg-teal)':'var(--dg-text)'};">${p.score}</div>
+                  <div style="font-size:9px;color:var(--dg-text-faint);">intent score</div>
+                </div>
+                <button class="btn btn-outline" style="height:26px;font-size:10px;padding:4px 10px;" onclick="showToast('Generating personalized pitch for ${p.name}...')">
+                  Pitch →
+                </button>
+              </div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+// ===== COMPANY INTEL =====
+function renderIntel() {
+  return `
+  <div class="page-header">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+      <span class="page-title">ATOM WarBook</span>
+      <span class="badge badge-teal">RAG-Powered</span>
+    </div>
+    <div class="page-subtitle">Full sales intelligence on any target account — one search</div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div style="display:flex;gap:10px;align-items:center;">
+      <input type="text" class="form-input" id="intelSearch" placeholder="Type any company name → instant sales intelligence (e.g. Fulton County, Piedmont Healthcare...)" style="flex:1;" onkeydown="if(event.key==='Enter')loadIntel()">
+      <button class="btn btn-primary" onclick="loadIntel()">
+        <i data-lucide="search" style="width:14px;height:14px;"></i>
+        Load Intel
+      </button>
+    </div>
+    <div style="font-size:10px;color:var(--dg-text-faint);margin-top:8px;">
+      <i data-lucide="info" style="width:10px;height:10px;display:inline;"></i>
+      Previously loaded companies are cached for 24 hours
+    </div>
+  </div>
+
+  <div id="intelOutput">
+    <div class="card">
+      <div class="empty-state">
+        <i data-lucide="building-2" class="empty-icon"></i>
+        <div class="empty-title">Enter a company name above to begin</div>
+        <div class="empty-desc">Full sales intelligence on any target account — one search</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="recentIntel" style="margin-top:14px;"></div>
+  `;
+}
+
+let intelHistory = [];
+function loadIntel() {
+  const company = document.getElementById('intelSearch')?.value?.trim();
+  if (!company) return;
+
+  document.getElementById('intelOutput').innerHTML = `
+    <div class="card">
+      <div class="ai-thinking">
+        <div class="spinner"></div>
+        <span>Loading firmographic & prospect intelligence for <strong>${company}</strong>...</span>
+      </div>
+    </div>
+  `;
+  lucide.createIcons();
+
+  setTimeout(() => {
+    addTokens(15);
+    intelHistory.unshift(company);
+    document.getElementById('intelOutput').innerHTML = buildIntelOutput(company);
+    if (intelHistory.length > 1) {
+      document.getElementById('recentIntel').innerHTML = `
+        <div class="card">
+          <div class="card-title">Recently Loaded Companies</div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;">
+            ${intelHistory.slice(1,6).map(c => `<div class="chip" onclick="document.getElementById('intelSearch').value='${c}';loadIntel();">${c}</div>`).join('')}
+          </div>
+        </div>
+      `;
+    }
+    lucide.createIcons();
+  }, 2000);
+}
+
+function buildIntelOutput(company) {
+  const score = Math.floor(Math.random()*20)+72;
+  const products = PRODUCTS.slice(0,3).map(p=>p.label);
+  const tabs = ['Pitch', 'Objections', 'Intent', 'Prospects', 'Playbook'];
+
+  return `
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
+        <div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px;">
+            <div style="width:32px;height:32px;border-radius:8px;background:rgba(74,143,191,0.15);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:var(--dg-teal);">
+              ${company.slice(0,2).toUpperCase()}
+            </div>
+            <span style="font-size:15px;font-weight:800;">${company}</span>
+          </div>
+          <div style="font-size:11px;color:var(--dg-teal);">✓ Intelligence loaded — 24h cache active</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div class="score-ring" style="--score:${score}%;width:50px;height:50px;">
+            <span class="score-value" style="font-size:13px;">${score}</span>
+          </div>
+          <div>
+            <div style="font-size:11px;font-weight:700;">Buyer Intent Score</div>
+            <div style="font-size:10px;color:var(--dg-text-faint);">Active signals detected</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tabs" id="intelTabs">
+        ${tabs.map((t,i) => `<div class="tab ${i===0?'active':''}" onclick="switchIntelTab('${t}',this)">${t}</div>`).join('')}
+      </div>
+
+      <div id="intelTabContent">
+        ${buildIntelTabContent('Pitch', company, products)}
+      </div>
+    </div>
+  `;
+}
+
+function switchIntelTab(tab, el) {
+  document.querySelectorAll('#intelTabs .tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  const company = document.getElementById('intelSearch')?.value?.trim() || 'This Company';
+  const products = PRODUCTS.slice(0,3).map(p=>p.label);
+  document.getElementById('intelTabContent').innerHTML = buildIntelTabContent(tab, company, products);
+  lucide.createIcons();
+}
+
+function buildIntelTabContent(tab, company, products) {
+  const tabs = {
+    Pitch: `
+      <div class="result-box">
+        <div class="result-heading"><i data-lucide="zap" style="width:11px;height:11px;"></i> Why They Need This</div>
+        <p style="margin-bottom:8px;">${company} operates in a regulated environment where legacy infrastructure creates compounding compliance and cost risk. As a Trusted Advisor™ powered by AVANT, The Deady Group is uniquely positioned to guide them through vendor selection with 350+ providers — ensuring the right fit for their compliance posture.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;">
+          ${products.map(p=>`<span class="badge badge-teal">${p}</span>`).join('')}
+        </div>
+      </div>
+    `,
+    Objections: `
+      <div class="flex-col">
+        ${['Budget constraints', 'Existing vendor relationship', 'Timing / bandwidth'].map(o => `
+          <div class="result-box">
+            <div class="result-heading" style="color:#f87171;"><i data-lucide="alert-circle" style="width:11px;height:11px;"></i> ${o}</div>
+            <div style="font-size:12px;">Counter: Position The Deady Group's vendor-neutral model as the solution — no cost bias, compliance-first evaluation, and access to 350+ providers to find the best fit at the right price.</div>
+          </div>
+        `).join('')}
+      </div>
+    `,
+    Intent: `
+      <div class="result-box">
+        <div class="result-heading"><i data-lucide="trending-up" style="width:11px;height:11px;"></i> Top Signals</div>
+        ${['POTS replacement urgency detected', 'Cyber insurance renewal approaching', 'Cloud migration budget cycle active', 'HIPAA/FedRAMP compliance gap flagged'].map(s => `
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+            <div class="signal-dot"></div>
+            <span style="font-size:12px;">${s}</span>
+          </div>
+        `).join('')}
+        <div style="margin-top:10px;padding:8px 10px;background:rgba(74,143,191,0.08);border-radius:6px;border:1px solid rgba(74,143,191,0.2);">
+          <div style="font-size:11px;font-weight:700;color:var(--dg-teal);">Recommended Action</div>
+          <div style="font-size:12px;margin-top:2px;">Lead with POTS sunset compliance angle — highest urgency trigger for this account type.</div>
+        </div>
+      </div>
+    `,
+    Prospects: `
+      <div class="flex-col">
+        ${['IT Director', 'CISO', 'Procurement Director', 'CFO'].map((t, i) => `
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:rgba(255,255,255,0.02);border-radius:6px;border:1px solid var(--dg-border-subtle);">
+            <div>
+              <div style="font-size:12px;font-weight:600;">[Decision Maker ${i+1}]</div>
+              <div style="font-size:11px;color:var(--dg-text-faint);">${t} · ${company}</div>
+            </div>
+            <span class="badge ${i<2?'badge-red':'badge-amber'}">${i<2?'Key':'Supporting'}</span>
+          </div>
+        `).join('')}
+      </div>
+    `,
+    Playbook: `
+      <div class="flex-col">
+        ${['Discovery Call', 'Compliance Gap Analysis', 'Vendor Benchmark', 'Executive Presentation', 'Contract Close'].map((stage, i) => `
+          <div style="display:flex;gap:10px;align-items:flex-start;padding:10px;background:rgba(255,255,255,0.02);border-radius:8px;border:1px solid var(--dg-border-subtle);">
+            <div style="width:22px;height:22px;border-radius:50%;background:rgba(74,143,191,0.2);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:var(--dg-teal);flex-shrink:0;">${i+1}</div>
+            <div>
+              <div style="font-size:12px;font-weight:700;">${stage}</div>
+              <div style="font-size:11px;color:var(--dg-text-faint);">Lead with compliance posture assessment → identify gaps → present vendor-neutral options from 350+ providers</div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `,
+  };
+  return tabs[tab] || '<div class="empty-state"><div class="empty-desc">Tab content loading...</div></div>';
+}
+
+// ===== HELPERS =====
+function showMsg(targetId, msg, type) {
+  const el = document.getElementById(targetId);
+  if (!el) return;
+  const color = type === 'warning' ? '#fbbf24' : 'var(--dg-teal)';
+  el.innerHTML = `
+    <div class="ai-thinking" style="color:${color};border-color:${color}30;background:${color}08;">
+      <i data-lucide="alert-circle" style="width:14px;height:14px;color:${color};"></i>
+      <span>${msg}</span>
+    </div>
+  `;
+  lucide.createIcons();
+}
+
+let toastTimeout;
+function showToast(msg) {
+  let toast = document.getElementById('globalToast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'globalToast';
+    toast.style.cssText = 'position:fixed;bottom:20px;right:20px;z-index:9999;padding:10px 16px;background:#1d2e44;border:1px solid rgba(74,143,191,0.4);border-radius:8px;font-size:13px;font-weight:600;color:#e8f0f8;box-shadow:0 4px 20px rgba(0,0,0,0.4);transition:opacity 0.3s;';
+    document.body.appendChild(toast);
+  }
+  toast.textContent = msg;
+  toast.style.opacity = '1';
+  clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => { toast.style.opacity = '0'; }, 2500);
+}
+
+function showHistoryPitch(i) {
+  const p = pitchHistory[i];
+  if (!p) return;
+  document.getElementById('pitchOutputContent').innerHTML = p.content;
+  lucide.createIcons();
+}
+
+function attachPageEvents(page) {
+  // Auto-focus search input on intel page
+  if (page === 'intel') {
+    setTimeout(() => document.getElementById('intelSearch')?.focus(), 100);
+  }
+}
+
+// ===== INIT =====
+document.addEventListener('DOMContentLoaded', () => {
+  lucide.createIcons();
+  renderPage('dashboard');
+});
+</script>
+</body>
+</html>
